@@ -16,11 +16,11 @@ class CreateSportFieldsTable extends Migration
         Schema::create('sport_fields', function (Blueprint $table) {
             $table->id();
             $table->string('address')->nullable()->default(null);
+            $table->integer('field_number')->nullable()->default(null);
             $table->foreignId('city_id')->constrained('cities');
             $table->foreignId('country_id')->constrained('countries');
             $table->integer('longitude')->nullable()->default(null);
             $table->integer('latitude')->nullable()->default(null);
-            $table->foreignId('type_id')->constrained('sport_field_types');
             $table->integer('number_of_courts');
             $table->timestamps();
         });

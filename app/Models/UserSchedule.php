@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserSchedule extends Model
 {
-    protected $fillable = ['user_id', 'sport_field_id', 'time'];
+    protected $fillable = ['user_id', 'sport_field_id', 'time', 'type_id'];
 
     public function user()
     {
@@ -17,4 +17,10 @@ class UserSchedule extends Model
     {
         return $this->hasMany(SportField::class);
     }
+
+    public function sportType()
+    {
+        return $this->belongsTo(SportFieldType::class);
+    }
+
 }

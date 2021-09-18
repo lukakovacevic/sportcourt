@@ -2,34 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserFieldRequest;
 use App\Models\Country;
+use App\Models\FieldTypes;
 use App\Models\SportField;
 use App\Models\SportFieldType;
 use App\Models\UserSchedule;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class SportFieldsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $sport_fields = SportField::all();
+        if(auth()->user()->role->name == 'user'){
+            return redirect('home')->withErrors('Your account does not have privilages to see this route');
+        }
+        $sport_fields = SportField::with(['type'])->get();
 
         return view('fields/list', compact('sport_fields'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
+        if(auth()->user()->role->name == 'user'){
+            return redirect('home')->withErrors('Your account does not have privilages to see this route');
+        }
         $countries = Country::with(['cities'])->get();
         $types = SportFieldType::all();
 
@@ -40,40 +37,46 @@ class SportFieldsController extends Controller
     {
         $now = Carbon::now();
         $now_time = $now->toDateString();
-        $field = SportField::where('id', $id)->first();
+        $field = SportField::with('type')->where('id', $id)->first();
         $user_times = UserSchedule::where('user_id', auth()->user()->id)->where('sport_field_id', $id)->whereDay('created_at', now()->day)->get();
-
-        return view('fields/show', compact(['field', 'now_time', 'user_times']));
+        $types = $field->type;
+        $user[] = '';
+        foreach($types as $type){
+            $all_times = UserSchedule::where('sport_field_id', $id)->whereDay('created_at', now()->day)->where('type_id', $type->id)->get();
+            $sport_players[] = ['type' => $type->type,
+                        'signed_players' => count($user_times)
+            ];
+        }
+        
+        return view('fields/show', compact(['field', 'now_time', 'sport_players', 'types', 'user_times']));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(StoreUserFieldRequest $request)
     {
-        SportField::create([
+        $sport_field = SportField::create([
             'address' => $request['address'],
             'longitude' => $request['longitude'],
             'latitude' => $request['latitude'],
             'city_id' => $request['city_id'],
-            'type_id' => $request['type_id'],
+            'field_number' => $request['field_number'],
             'country_id' => $request['country_id'],
             'number_of_courts' => $request['number_of_courts'],
         ]);
+
+        foreach($request['types'] as $type){
+            FieldTypes::create([
+                'type_id' => $type,
+                'field_id' => $sport_field['id']
+            ]);
+        }
         return redirect()->route('fields_list');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
+        if(auth()->user()->role->name == 'user'){
+            return redirect('home')->withErrors('Your account does not have privilages to see this route');
+        }
         SportField::where('id', $id)->delete();
         return redirect()->route('fields_list');
     }

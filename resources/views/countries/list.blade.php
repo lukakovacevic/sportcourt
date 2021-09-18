@@ -1,27 +1,26 @@
 <html>
+<link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
 
-    <body>
-        <a href="{{route('home')}}">Back</a>
-        <a href="create">Create Country</a>
-        <tbody>
+<body>
+    <div class="header">
+        <a href="{{route('home')}}" class="link-btn back-btn">Back</a>
+        <a href="create" class="link-btn create-btn">Create country</a>
+    </div>
+
+    <tbody>
         @foreach($countries as $country)
-            <tr>
-                <td>{{ $country->name}}</td>
-                <td>{{ $country->visible}}</td>
-                <td>
-                <form action="{{ route('delete_country', $country->id) }}" method="POST">
-    @csrf
-    @method('delete')
-    <button type="submit" class="btn btn-outline-danger">Delete</button>
-</form>
-                </td>
-            </tr>
-        </tbody>         
+        <div class="item-container">
+            <span class="item-name">{{ $country->name}}</span>
+            <span class="item-country">{{ $country->visible}}</span>
+            <form action="{{ route('delete_country', $country->id) }}" method="POST" class="delete-form">
+                @csrf
+                @method('delete')
+                <button type="submit" class="link-btn btn-delete">Delete</button>
+            </form>
+        </div>
         @endforeach
-        </tbody>
-        <div>
-        
+    </tbody>
+    <div>
+</body>
 
-  
-    </body>
 </html>

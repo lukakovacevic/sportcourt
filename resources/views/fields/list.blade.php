@@ -1,33 +1,95 @@
-<html>
+@extends('layouts.app')
 
-    <body>
-    <a href="{{route('home')}}">Back</a>
-        <a href="create">Create Court</a>
-        <tbody>
+
+@section('content')
+<body>
+    <div class="header">
+        <a href="{{route('home')}}" class="link-btn back-btn">Back</a>
+        <a href="create" class="link-btn create-btn">Create Court</a>
+    </div>
+    <tbody>
+    <td>
+                <tr>
+                    <label for="">Address</label>
+                </tr>
+                <tr>
+                    <label for="">Field number</label>
+                </tr>
+                <tr>
+                    <label for="">Country</label>
+                </tr>
+                <tr>
+                    <label for="">City</label>
+                </tr>
+                <tr>
+                    <label for="">Field Types</label>
+                </tr>
+                <tr>
+                    <label for="">Longitude</label>
+                </tr>
+                <tr>
+                    <label for="">Latitude</label>
+                </tr>
+                <tr>
+                    <label for="">Number of courts</label>
+                </tr>
+            </td>
+    </tbody>
+    
+    <tbody>
+        @if($sport_fields)
         @foreach($sport_fields as $field)
-            <tr>
-                <td>{{ $field->address}}</td>
-                <td>{{ $field->country->name}}</td>
-                <td>{{ $field->city->name}}</td>
-                <td>{{ $field->type->type}}</td>
-                <td>{{ $field->longitude}}</td>
-                <td>{{ $field->latitude}}</td>
-                <td>{{ $field->number_of_courts}}</td>
-                <td>
-                    
-                <form action="{{ route('delete_field', $field->id) }}" method="POST">
-                    @csrf
-                    @method('delete')
-                <button type="submit" class="btn btn-outline-danger">Delete</button>
-                </form>
-                </td>
-            </tr>
-        </tbody>         
-        @endforeach
-        </tbody>
-        <div>
-        
 
-  
-    </body>
-</html>
+        <div class="court-info-container">
+            <td>
+                <tr>
+                <span class="item-name">{{ $field->address}}</span>
+                </tr>
+                
+                <tr>
+                <span class="item-name">{{ $field->field_number}}</span>
+                </tr>
+    
+                <tr>
+                <span class="item-name">{{ $field->country->name}}</span>
+                </tr>
+      
+                <tr>
+                <span class="item-name">{{ $field->city->name}}</span>
+                </tr>
+    
+                <tr>
+                <span class="item-name">
+                @foreach($field->type as $type)
+                {{ $type->type}}
+            @endforeach</span>
+                </tr>
+    
+                <tr>
+                <span class="item-name">{{ $field->longitude}}</span>
+                </tr>
+       
+                <tr>
+                <span class="item-name">{{ $field->latitude}}</span>
+                </tr>
+    
+                <tr>
+                <span class="item-name">{{ $field->number_of_courts}}</span>
+                </tr>
+                <tr>
+                <form action="{{ route('delete_field', $field->id) }}" method="POST" class="delete-form">
+                @csrf
+                @method('delete')
+                <button type="submit" class="link-btn btn-delete">Delete</button>
+            </form>
+                </tr>
+            </td>
+            
+        </div>
+    </tbody>
+    @endforeach
+    @endif
+   
+</body>
+@endsection
+

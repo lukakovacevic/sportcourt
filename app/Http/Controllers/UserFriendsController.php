@@ -10,24 +10,24 @@ use Illuminate\Support\Facades\Redirect;
 
 class UserFriendsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function listUserFriends(Request $request)
     {    
     $user_friends = UserFriends::where('user_id', auth()->user()->id)->get();
-
-    return view('users/friends_list', compact('user_friends'));
+    $to_accept = array();
+    $sent_request = UserFriends::where('friend_id', auth()->user()->id)->where('has_accepted', false)->get();
+    foreach($sent_request as $sent){
+        $not_accepted_friend = UserFriends::where('user_id', auth()->user()->id)->where('friend_id', $sent->user_id)->first();
+        if(!$not_accepted_friend){
+            $to_accept[] = [
+                'username' => $sent->user->username,
+                'to_accept_id' => $sent->id
+        ];
+        }
+    }
+        
+    return view('users/friends_list', compact(['user_friends', 'to_accept']));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StoreFriendRequest $request)
     {
         $friend = User::where('username', $request['friend_username'])->first();
@@ -37,20 +37,32 @@ class UserFriendsController extends Controller
         }
         UserFriends::create([
             'user_id' => auth()->user()->id,
-            'friend_id' => $friend_id
+            'friend_id' => $friend_id,
+            'has_accepted' => false
         ]);
+
         return redirect()->route('friends_list');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\UserFriends  $userFriends
-     * @return \Illuminate\Http\Response
-     */
+    public function acceptFriend($username)
+    {
+        $user = User::where('username', $username)->first();
+        $accepted_friend = UserFriends::where('user_id', $user->id)->where('friend_id', auth()->user()->id);
+        $accepted_friend->update([
+            'has_accepted' => 1
+        ]);
+        UserFriends::create([
+            'user_id' => auth()->user()->id,
+            'friend_id' => $user->id,
+            'has_accepted' => 1
+        ]);
+
+        return redirect()->route('friends_list')->with('success','Friend accepted successfully');
+    }
+
     public function destroy($id)
     {  
-        UserFriends::where('user_id', auth()->user()->id)->where('friend_id', $id)->delete();
+        UserFriends::where('id', $id)->delete();
         return redirect()->route('friends_list')->with('success','Task deleted successfully');
     }
 }

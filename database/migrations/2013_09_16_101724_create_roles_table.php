@@ -2,9 +2,10 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserSchedulesTable extends Migration
+class CreateRolesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +14,13 @@ class CreateUserSchedulesTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_schedules', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('sport_field_id')->constrained('sport_fields');
-            $table->integer('time');
-            $table->foreignId('type_id')->constrained('sport_field_types');
+            $table->string('name');
             $table->timestamps();
         });
+        DB::table('roles')->insert(['name' => 'admin']);
+        DB::table('roles')->insert(['name' => 'user']);
     }
 
     /**
@@ -30,6 +30,6 @@ class CreateUserSchedulesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_schedules');
+        Schema::dropIfExists('roles');
     }
 }

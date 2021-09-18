@@ -1,24 +1,19 @@
+
 <div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
-		<div class="profile-sidebar">
-			<div class="profile-usertitle">
-				<div class="profile-usertitle-name">Sport Courts</div>
-				
-			</div>
-			<div class="clear"></div>
+	<div class="profile-sidebar">
+		<div class="profile-usertitle">
+			<div class="page-title">Sports Court</div>
 		</div>
-
-		<div class="divider"></div>
-
-		<ul class="nav menu">
-			
-			<li ><a href="/users/friends_list"><em class="fa fa-calendar">&nbsp;</em>Friends</a></li>
-			<li ><a href="/courts/courts_list"><em class="fa fa-bar-chart">&nbsp;</em>Courts</a></li>
-			<li ><a href="/users/userfields"><em class="fa fa-toggle-off">&nbsp;</em>Favorite Fields</a></li>
-
-			
-				<li ><a href="/countries/list"><em class="fa fa-toggle-on">&nbsp;</em>Countries</a></li>
-				<li ><a href="/cities/list"><em class="fa fa-toggle-on">&nbsp;</em>Cities</a></li>
-				<li ><a href="/fields/list"><em class="fa fa-toggle-on">&nbsp;</em>Fields</a></li>
-			
-		</ul>
+		<div class="clear"></div>
 	</div>
+	<div class="categories-container">
+		<div><a href="/users/friends_list" class="categories-items">Friends</a></div>
+		<!-- <div><a href="/courts/courts_list" class="categories-items">Courts</a></div> -->
+		<div><a href="/users/userfields" class="categories-items">Favorite Fields</a></div>
+		@if(auth()->user()->role->name == 'admin')
+		<div><a href="/countries/list" class="categories-items">Countries</a></div>
+		<div><a href="/cities/list" class="categories-items">Cities</a></div>
+		<div><a href="/fields/list" class="categories-items">Fields</a></div>
+		@endif
+	</ul>
+</div>

@@ -6,7 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class SportField extends Model
 {
-    protected $fillable = ['address', 'city_id', 'country_id','longitude', 'latitude', 'type_id', 'number_of_courts'];
+    protected $fillable = [
+        'address',
+        'field_number',
+        'city_id', 
+        'country_id',
+        'longitude', 
+        'latitude', 
+        'number_of_courts'];
 
     public function city()
     {
@@ -18,14 +25,14 @@ class SportField extends Model
         return $this->belongsTo(Country::class);
     }
 
-    public function type()
-    {
-        return $this->belongsTo(SportFieldType::class);
-    }
-
     public function schedule()
     {
         return $this->belongsToMany(UserSchedule::class);
     }
     
+    public function type()
+    {
+        return $this->hasManyThrough(SportFieldType::class, FieldTypes::class, 'field_id', 'id', 'id', 'type_id', );
+    }
+
 }

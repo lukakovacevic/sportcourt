@@ -27,10 +27,9 @@ Route::view('home', 'home')->name('home');
 Route::get('/users/friends_list', [UserFriendsController::class, 'listUserFriends'])->name('friends_list');
 Route::post('/users/friends_list', [UserFriendsController::class, 'store'])->name('add_friend');
 Route::get('/users/delete/{id}', [UserFriendsController::class, 'destroy'])->name('delete_friend');
+Route::get('/users/accept_friend/{username}', [UserFriendsController::class, 'acceptFriend'])->name('accept_friend');
 
-Route::get('/users/fields_list', [UserFieldsController::class, 'listUserFields'])->name('user_fields');
 Route::post('/users/fields_list', [UserFieldsController::class, 'store'])->name('add_field');
-Route::get('/users/fields/delete/{id}', [UserFieldsController::class, 'destroy'])->name('delete_field');
 
 Route::get('/countries/list', [CountriesController::class, 'index'])->name('countries_list');
 Route::get('/countries/create', [CountriesController::class, 'create'])->name('create_country');
@@ -53,5 +52,6 @@ Route::get('/users/userfields', [UserFieldsController::class, 'index'])->name('u
 Route::post('/users/userfields', [UserFieldsController::class, 'store'])->name('add_user_field');
 Route::get('/users/userfield/delete/{id}', [UserFieldsController::class, 'destroy'])->name('delete_user_field');
 Route::get('/users/getfieldbycity/{id}', [UserFieldsController::class, 'getFieldsByCity'])->name('city_fields');
+Route::get('/users/gettypebyfield/{id}', [UserFieldsController::class, 'getTypeByField'])->name('field_types');
 
 Route::post('/users/schedule/{id}', [UserScheduleController::class, 'store'])->name('store_schedule');

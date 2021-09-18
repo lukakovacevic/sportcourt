@@ -8,35 +8,24 @@ use Illuminate\Http\Request;
 
 class CitiesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
+        if(auth()->user()->role->name == 'user'){
+            return redirect('home')->withErrors('Your account does not have privilages to see this route');
+        }
         $cities = City::all();
-
         return view('cities/list', compact('cities'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
+        if(auth()->user()->role->name == 'user'){
+            return redirect('home')->withErrors('Your account does not have privilages to see this route');
+        }
         $countries = Country::all();
         return view('cities/create', compact('countries'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         City::create([
@@ -46,14 +35,11 @@ class CitiesController extends Controller
         return redirect()->route('cities_list');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\City  $city
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
+        if(auth()->user()->role->name == 'user'){
+            return redirect('home')->withErrors('Your account does not have privilages to see this route');
+        }
         City::where('id', $id)->delete();
         return redirect()->route('cities_list');
     }
@@ -61,8 +47,6 @@ class CitiesController extends Controller
     public function getCitiesByCountry($id)
     {
         $cit = City::where('country_id', $id)->get();
-
         return $cit;
     }
-
 }
